@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { Plus, LayoutGrid, CheckCircle2, CircleDashed, Hash } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, LayoutGrid, CheckCircle2, CircleDashed, Hash, X } from 'lucide-react';
 import type { FilterStatus } from '../../types';
 import { AVAILABLE_TAGS } from '../../utils/constants';
 
@@ -7,9 +7,11 @@ interface SidebarProps {
   statusFilter: FilterStatus;
   setStatusFilter: (s: FilterStatus) => void;
   onAddTaskClick: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ statusFilter, setStatusFilter, onAddTaskClick }: SidebarProps) {
+export function Sidebar({ statusFilter, setStatusFilter, onAddTaskClick, isOpen = false, onClose }: SidebarProps) {
   const navItems = [
     { id: 'All', label: 'All Tasks', icon: LayoutGrid },
     { id: 'Active', label: 'In Progress', icon: CircleDashed },
@@ -17,15 +19,39 @@ export function Sidebar({ statusFilter, setStatusFilter, onAddTaskClick }: Sideb
   ] as const;
 
   return (
-    <aside className="w-64 h-full vision-glass flex flex-col pt-8 pb-6 px-4 shrink-0 z-20 rounded-[2rem] transition-all duration-300">
-      <div className="flex items-center gap-2 px-2 mb-8">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-sm">
-          <CheckCircle2 className="w-5 h-5 text-white" />
+    <>
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 h-full vision-glass flex flex-col pt-8 pb-6 px-4 shrink-0 rounded-r-[2rem] lg:rounded-[2rem] transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex items-center justify-between px-2 mb-8">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-sm">
+              <CheckCircle2 className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-indigo-700">
+              TaskFlow
+            </h1>
+          </div>
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="lg:hidden p-2 rounded-full hover:bg-slate-100 text-[var(--color-text-muted)] transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-indigo-700">
-          TaskFlow
-        </h1>
-      </div>
 
       <motion.button
         whileHover={{ scale: 1.02 }}
@@ -76,5 +102,6 @@ export function Sidebar({ statusFilter, setStatusFilter, onAddTaskClick }: Sideb
         </div>
       </div>
     </aside>
+    </>
   );
 }

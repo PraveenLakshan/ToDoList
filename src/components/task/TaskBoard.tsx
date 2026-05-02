@@ -105,7 +105,7 @@ export function TaskBoard({ tasks, onUpdateStatus, onReorderTasks, onSelectTask,
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-6 h-full overflow-x-auto pb-4 custom-scrollbar">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 md:h-full overflow-y-auto md:overflow-x-auto pb-4 custom-scrollbar">
         {columns.map((col) => {
           const columnTasks = tasks.filter((task) => task.status === col.id);
           return (

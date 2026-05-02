@@ -34,11 +34,12 @@ export default function App() {
   const [isTaskFormVisible, setIsTaskFormVisible] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const selectedTask = tasks.find(t => t.id === selectedTaskId) || null;
 
   return (
-    <div className={`flex h-screen w-screen overflow-hidden bg-[var(--color-bg-deep)] p-4 sm:p-6 gap-6 text-[var(--color-text-main)] selection:bg-purple-500/30 selection:text-purple-900 transition-colors duration-300 relative`}>
+    <div className={`flex h-screen w-screen overflow-hidden bg-[var(--color-bg-deep)] p-2 sm:p-4 lg:p-6 gap-2 lg:gap-6 text-[var(--color-text-main)] selection:bg-purple-500/30 selection:text-purple-900 transition-colors duration-300 relative`}>
       {/* Fluid Background Orbs */}
       <div className="fluid-bg-orb w-[800px] h-[800px] top-[-10%] left-[-10%] bg-purple-300/40" style={{ animationDelay: '0s' }} />
       <div className="fluid-bg-orb w-[600px] h-[600px] top-[20%] right-[-5%] bg-blue-200/40" style={{ animationDelay: '-5s' }} />
@@ -46,19 +47,28 @@ export default function App() {
 
       <Sidebar 
         statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        onAddTaskClick={() => setIsTaskFormVisible(true)}
+        setStatusFilter={(s) => {
+          setStatusFilter(s);
+          setIsMobileMenuOpen(false);
+        }}
+        onAddTaskClick={() => {
+          setIsTaskFormVisible(true);
+          setIsMobileMenuOpen(false);
+        }}
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
       />
 
-      <main className="flex-1 flex flex-col relative z-10 overflow-hidden vision-glass rounded-[2rem]">
+      <main className="flex-1 flex flex-col relative z-10 overflow-hidden vision-glass rounded-2xl lg:rounded-[2rem]">
         <TopBar 
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           priorityFilter={priorityFilter}
           setPriorityFilter={setPriorityFilter}
+          onOpenMenu={() => setIsMobileMenuOpen(true)}
         />
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-8">
           <div className="max-w-5xl mx-auto pb-12">
             
             <BentoStats stats={stats} />
@@ -121,7 +131,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={viewMode === 'board' ? "h-[500px]" : ""}
+              className={viewMode === 'board' ? "md:h-[500px]" : ""}
             >
               {viewMode === 'list' ? (
                 <TaskList

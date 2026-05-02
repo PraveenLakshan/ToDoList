@@ -17,7 +17,7 @@ export function BoardColumn({ column, tasks, children }: BoardColumnProps) {
   });
 
   return (
-    <div className="flex flex-col flex-1 min-w-[300px] max-w-[350px]">
+    <div className="flex flex-col w-full md:flex-1 md:min-w-[280px] md:max-w-[350px]">
       <div className="flex items-center justify-between mb-4 px-1">
         <h3 className="font-bold text-[var(--color-text-main)] text-sm tracking-wide flex items-center gap-2">
           {column.title}
